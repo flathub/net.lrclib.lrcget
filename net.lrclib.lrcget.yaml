@@ -5,10 +5,10 @@ sdk: org.gnome.Sdk
 sdk-extensions:
   - org.freedesktop.Sdk.Extension.node24
   - org.freedesktop.Sdk.Extension.rust-stable
-command: LRCGET
-rename-desktop-file: LRCGET.desktop
-rename-appdata-file: LRCGET.metainfo.xml
-rename-icon: LRCGET
+command: lrcget
+rename-desktop-file: lrcget.desktop
+rename-appdata-file: lrcget.metainfo.xml
+rename-icon: lrcget
 
 finish-args:
   - --socket=wayland
@@ -26,22 +26,22 @@ modules:
       env:
         CARGO_NET_OFFLINE: 'true'
         XDG_CACHE_HOME: /run/build/lrcget/flatpak-node/cache
-        LINDERA_CACHE: /run/build/lrcget/lindera-dics
+        LINDERA_BUILD_DICTIONARY_CACHE_DIR: /run/build/lrcget/lindera-dics
     build-commands:
       - HOME=$PWD yarn config --offline set yarn-offline-mirror $FLATPAK_BUILDER_BUILDDIR/flatpak-node/yarn-mirror
       - yarn --offline --frozen-lockfile install
       - install -Dm644 cargo/config .cargo/config.toml
       - cargo fetch --manifest-path src-tauri/Cargo.toml --verbose
       - yarn --offline run tauri build --no-bundle
-      - install -Dm755 -t /app/bin src-tauri/target/release/LRCGET
-      - install -Dm644 -t /app/share/applications packaging/linux/LRCGET.desktop
-      - install -Dm644 -t /app/share/metainfo packaging/linux/LRCGET.metainfo.xml
-      - install -Dm644 src-tauri/icons/icon.png /app/share/icons/hicolor/512x512/apps/LRCGET.png
+      - install -Dm755 -t /app/bin src-tauri/target/release/lrcget
+      - install -Dm644 -t /app/share/applications packaging/linux/lrcget.desktop
+      - install -Dm644 -t /app/share/metainfo packaging/linux/lrcget.metainfo.xml
+      - install -Dm644 src-tauri/icons/icon.png /app/share/icons/hicolor/512x512/apps/lrcget.png
     sources:
       - type: git
         url: https://github.com/tranxuanthang/lrcget.git
-        commit: bd31b5c2789576e9c875e37ba87e792da02b4606
-        tag: 2.2.0
+        commit: 767703a20c665ce6a868597415c835f9a3ce19f6
+        tag: 2.2.1
         x-checker-data:
           type: git
           tag-pattern: ^([\d.]+)$
@@ -50,12 +50,10 @@ modules:
       - node-sources.json
       - cargo-sources.json
       - type: file
-        dest: lindera-dics/0.43.3
+        dest: lindera-dics/5.3.0-fmt2
         url: https://lindera.dev/unidic-mecab-2.1.2.tar.gz
         sha256: 24ac75fe4e44d973b55e65847c35fa4aec2db7a41a07b49ca125146db9fc1189
       - type: file
-        dest: lindera-dics/0.43.3
+        dest: lindera-dics/5.3.0-fmt2
         url: https://lindera.dev/mecab-ko-dic-2.1.1-20180720.tar.gz
         sha256: 702ced21c6167e9d9aebc674ab5ee54af58d4443975f2940d37d0567c020591a
-      - type: patch
-        path: patches/lindera-offline-dics.patch
